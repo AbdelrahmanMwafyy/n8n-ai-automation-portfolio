@@ -13,7 +13,7 @@ PostgreSQL memory and human escalation.
 ### 2. Sentiment Feedback Router  
 Analyzes customer feedback and routes personalized 
 AI-generated email responses automatically.
-[View →](02-sentiment-feedback-router/)
+[View →](n8n_automation_portfolio/Sentoment-router/sentiment-feedback-route.json)
 
 ### 3. Lead Qualification Engine
 Scores inbound leads 1-10 with AI, routes hot leads 
