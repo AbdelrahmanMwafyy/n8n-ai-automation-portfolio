@@ -8,7 +8,7 @@ using local and cloud LLMs at zero ongoing API cost.
 ### 1. Luna — RAG Customer Support Agent
 AI agent that answers from your knowledge base with 
 PostgreSQL memory and human escalation.
-[View →](01-luna-rag-agent/)
+[View →](n8n_automation_portfolio/luna-rag-agent/luna-rag-agent.json)
 
 ### 2. Sentiment Feedback Router  
 Analyzes customer feedback and routes personalized 
