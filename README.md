@@ -18,7 +18,7 @@ AI-generated email responses automatically.
 ### 3. Lead Qualification Engine
 Scores inbound leads 1-10 with AI, routes hot leads 
 to urgent alerts and cold leads to nurture emails.
-[View →](03-lead-qualifier/)
+[View →]([03-lead-qualifier/](https://github.com/AbdelrahmanMwafyy/n8n-ai-automation-portfolio/blob/c53ec887bd5fe8e0ddcee2444f620c5c2a14ded5/n8n_automation_portfolio/lead-qualifer/lead-qualifier.json))
 
 ### 4. Quote Generator Pipeline
 Scheduled AI content generation with Sheets logging 
