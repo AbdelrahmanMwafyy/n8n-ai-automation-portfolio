@@ -1,0 +1,462 @@
+{
+  "name": "sentiment-feedback-route",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "customer feedback",
+        "formDescription": "we would like to hear from you! how can we improve your experience? ",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "name",
+              "placeholder": "Enter your name..",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "Email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Feedback",
+              "fieldType": "textarea",
+              "placeholder": "Tell us about your experience",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "55efbc87-9f38-405e-a64a-4c19cd364026",
+      "name": "On form submission",
+      "webhookId": "27722bfe-43f7-4dfc-9ece-e17eea13db88"
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.Feedback }}",
+        "options": {
+          "categories": "Positive, Negative"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "1441b5b6-ec8d-40ca-a921-fcdddac370d4",
+      "name": "Sentiment Analysis"
+    },
+    {
+      "parameters": {
+        "model": "qwen3.5:9b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        144,
+        208
+      ],
+      "id": "4863cf2d-f19f-49d0-a01f-22d721c3a6f7",
+      "name": "Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "AaUo8FtkM6eXKJjl",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1nh-61LoeoGNcxOcO63jh2VK3Y4xWANgFYshnQwVKaEA",
+          "mode": "list",
+          "cachedResultName": "customer feedback",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nh-61LoeoGNcxOcO63jh2VK3Y4xWANgFYshnQwVKaEA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nh-61LoeoGNcxOcO63jh2VK3Y4xWANgFYshnQwVKaEA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('On form submission').item.json.Email }}",
+            "Name ": "={{ $('On form submission').item.json.name }}",
+            "Feedback": "={{ $('On form submission').item.json.Feedback }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name ",
+              "displayName": "Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Feedback",
+              "displayName": "Feedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        -96
+      ],
+      "id": "071ea996-4814-4a16-9b28-59f180c9998b",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HVE1qgQMhPvMfJa",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=you are a customer support agent for a restaurant called the oak and barrel\nwrite a friendly and concise response to the customer feedback\nThis need to be formatted as an HTML email,and signed by luna from  oak and barrel.\nRespond with HTML only, do not include things like '''HTML\ncustomer name: {{ $json['Name '] }}\n\nFeedback\n{{ $json.Feedback }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        768,
+        -96
+      ],
+      "id": "0430c3e6-63a3-4260-a483-675c0ae08d6b",
+      "name": "generate positive response"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.Email }}",
+        "subject": "thank you for your feedback",
+        "message": "={{ $json.text }}",
+        "options": {
+          "appendAttribution": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1136,
+        -96
+      ],
+      "id": "43510ca6-74a0-4aac-81e0-391783798968",
+      "name": "send positive email",
+      "webhookId": "90bec778-29f5-482f-b091-b935d0c5ec66",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LfU8dEmuDshZ1y5H",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a customer support agent for a restaurant called the Oak & Barrel. A custoner just left the below review.\nProvide a concise suggestion on what the owners of the restaurant can do to avoid negative reviews like this in the future.\nFeedback :\n{{ $('On form submission').item.json.Feedback }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        736,
+        160
+      ],
+      "id": "1ea27511-609c-4084-b28f-e981745ed414",
+      "name": "pruposed improvments"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1nh-61LoeoGNcxOcO63jh2VK3Y4xWANgFYshnQwVKaEA",
+          "mode": "list",
+          "cachedResultName": "customer feedback",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nh-61LoeoGNcxOcO63jh2VK3Y4xWANgFYshnQwVKaEA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1865949582,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nh-61LoeoGNcxOcO63jh2VK3Y4xWANgFYshnQwVKaEA/edit#gid=1865949582"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('On form submission').item.json.Email }}",
+            "Name": "={{ $('On form submission').item.json.name }}",
+            "Feedback": "={{ $('On form submission').item.json.Feedback }}",
+            "AI suggestion": "={{ $json.text }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Feedback",
+              "displayName": "Feedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "AI suggestion",
+              "displayName": "AI suggestion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        256
+      ],
+      "id": "5c717896-85cb-4084-be13-31e7d9585eb8",
+      "name": "add negative reveiw",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HVE1qgQMhPvMfJa",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=you are a customer support agent for a restaurant called the oak and barrel\nwrite a friendly and concise response to the customer feedback\nthe email should thank the user for pointing out the issue with the resturant and reassure them that this has been escalated to managment\ninclude a 10% coupon code in the email when they use code leon next time they visit the resturant \nThis need to be formatted as an HTML email,and signed by luna from  oak and barrel.\nRespond with HTML only, do not include things like '''HTML\ncustomer name: {{ $json['Name '] }}\n\nFeedback\n{{ $json.Feedback }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1184,
+        256
+      ],
+      "id": "fedb4aa9-b104-4c90-bf77-7bef3bf48d56",
+      "name": "generate negative response"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.Email }}",
+        "subject": "thank you for your feedback",
+        "message": "=",
+        "options": {
+          "appendAttribution": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        176
+      ],
+      "id": "063dcd1e-2724-4ea1-812f-61f0188927a8",
+      "name": "send negative email",
+      "webhookId": "90bec778-29f5-482f-b091-b935d0c5ec66",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LfU8dEmuDshZ1y5H",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "generate positive response",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "pruposed improvments",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "generate negative response",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "pruposed improvments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "generate positive response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generate positive response": {
+      "main": [
+        [
+          {
+            "node": "send positive email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pruposed improvments": {
+      "main": [
+        [
+          {
+            "node": "add negative reveiw",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add negative reveiw": {
+      "main": [
+        [
+          {
+            "node": "generate negative response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generate negative response": {
+      "main": [
+        [
+          {
+            "node": "send negative email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "42db3527-3fcd-4cd1-9ba8-816f10ccce83",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "192d262a3ce7ac1c6a5a8a675e2f8c76f0a5fb33876a64683d7be46345e65f1c"
+  },
+  "id": "ikh36YCmCSCwbYxc",
+  "tags": []
+}

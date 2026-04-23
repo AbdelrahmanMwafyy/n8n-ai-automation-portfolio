@@ -1,0 +1,177 @@
+{
+  "name": "quote-generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bbfda7cd-e5c4-437f-a5fc-e3ce44d9c8d3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "generate different  a motivational quote, response with qoute only and nothing else.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        416,
+        0
+      ],
+      "id": "0dca9145-7ff5-4327-8a84-298b7f7baaf2",
+      "name": "motivational quote generator"
+    },
+    {
+      "parameters": {
+        "model": "llama3.2-vision:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        352,
+        208
+      ],
+      "id": "4a7cdf1b-a373-4078-a6d4-2594d9e30d0d",
+      "name": "Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "AaUo8FtkM6eXKJjl",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KHFlkbyfhYq7otZSmLRN2w1giNEPt3lTNpTSpZEDv9U",
+          "mode": "list",
+          "cachedResultName": "email for motivational speech",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KHFlkbyfhYq7otZSmLRN2w1giNEPt3lTNpTSpZEDv9U/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KHFlkbyfhYq7otZSmLRN2w1giNEPt3lTNpTSpZEDv9U/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        0
+      ],
+      "id": "8fab82d9-16d3-439c-9774-fdb2843682a7",
+      "name": "Add row to motivitional sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HVE1qgQMhPvMfJa",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Email address'] }}",
+        "subject": "motivational email",
+        "message": "={{ $('motivational quote generator').item.json.text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        16
+      ],
+      "id": "aa8274b6-faa3-4b24-8aa2-9842cb9447d3",
+      "name": "send motivational email",
+      "webhookId": "29c75494-3185-41d2-9aee-1395703acdd6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LfU8dEmuDshZ1y5H",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "motivational quote generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "motivational quote generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "motivational quote generator": {
+      "main": [
+        [
+          {
+            "node": "Add row to motivitional sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add row to motivitional sheet": {
+      "main": [
+        [
+          {
+            "node": "send motivational email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send motivational email": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Africa/Cairo",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "503799e3-4989-49a1-b71c-7d410b442e21",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "192d262a3ce7ac1c6a5a8a675e2f8c76f0a5fb33876a64683d7be46345e65f1c"
+  },
+  "id": "1g4xjW1zFNyHXsZn",
+  "tags": []
+}

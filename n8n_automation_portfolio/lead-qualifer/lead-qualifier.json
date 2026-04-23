@@ -1,0 +1,171 @@
+{
+  "name": "lead-qualifier",
+  "nodes": [
+    {
+      "parameters": {
+        "formId": "qLfNbEJw"
+      },
+      "type": "n8n-nodes-base.typeformTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "214c3b42-9144-449a-b8b9-81c1d3bdc206",
+      "name": "Typeform Trigger",
+      "webhookId": "c1e54e4f-b391-4762-8cc2-57360e22606a",
+      "credentials": {
+        "typeformApi": {
+          "id": "GYzcZXfHu9AtC17d",
+          "name": "Typeform account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4e69e613-5f9a-4207-a16d-07f7edf90469",
+              "name": "leadName",
+              "value": "={{ $json.Name.capitalize() }}",
+              "type": "string"
+            },
+            {
+              "id": "b6383692-5989-48bd-a4fd-645c9cd512cf",
+              "name": "LeadEmail",
+              "value": "={{ $json.Email.toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "166888fc-a720-4a33-8e49-b11cec8df4c2",
+              "name": "LeadValue",
+              "value": "={{ $json.Budget_Field }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4c29f37d-ba6d-4620-aaa0-da95ec6b3974",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1zxYrm2EgolqHc5fBTthPl8wooGXU2Z1EDUZ39X56j5o",
+          "mode": "list",
+          "cachedResultName": "Lead generation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zxYrm2EgolqHc5fBTthPl8wooGXU2Z1EDUZ39X56j5o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zxYrm2EgolqHc5fBTthPl8wooGXU2Z1EDUZ39X56j5o/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "LeadEmail"
+          ],
+          "schema": [
+            {
+              "id": "LeadName",
+              "displayName": "LeadName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LeadEmail",
+              "displayName": "LeadEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LeadValue",
+              "displayName": "LeadValue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        0
+      ],
+      "id": "31a66184-f674-4b6a-9477-dec611955bbe",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HVE1qgQMhPvMfJa",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Typeform Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "16f50a1c-5cd9-411b-8e41-ea67776a3423",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "192d262a3ce7ac1c6a5a8a675e2f8c76f0a5fb33876a64683d7be46345e65f1c"
+  },
+  "id": "NQzDAOtFN5HkIK7S",
+  "tags": []
+}
