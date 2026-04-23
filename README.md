@@ -1,2 +1,40 @@
-# n8n-ai-automation-portfolio
-AI automation workflows built in n8n — RAG agents, lead qualification, sentiment analysis
+# n8n AI Automation Portfolio
+
+4 production-ready AI automation workflows built in n8n
+using local and cloud LLMs at zero ongoing API cost.
+
+## Workflows
+
+### 1. Luna — RAG Customer Support Agent
+AI agent that answers from your knowledge base with 
+PostgreSQL memory and human escalation.
+[View →](01-luna-rag-agent/)
+
+### 2. Sentiment Feedback Router  
+Analyzes customer feedback and routes personalized 
+AI-generated email responses automatically.
+[View →](02-sentiment-feedback-router/)
+
+### 3. Lead Qualification Engine
+Scores inbound leads 1-10 with AI, routes hot leads 
+to urgent alerts and cold leads to nurture emails.
+[View →](03-lead-qualifier/)
+
+### 4. Quote Generator Pipeline
+Scheduled AI content generation with Sheets logging 
+and Gmail delivery.
+[View →](04-quote-generator/)
+
+## Tech Stack
+n8n · Ollama (local LLM) · Groq API (free cloud LLM) ·
+PostgreSQL · PGVector · Gmail · Google Sheets
+
+## Zero API Cost
+All workflows use either Ollama (local, free) or 
+Groq free tier (14,400 tokens/min). No OpenAI costs.
+
+## Import Any Workflow
+1. Open your n8n instance
+2. Click + → Import from file
+3. Select the .json file from any workflow folder
+4. Add your credentials
